@@ -1,54 +1,39 @@
 import cv2
 import numpy as np
-from google.colab.patches import cv2_imshow
 from google.colab import files
-import math
+from google.colab.patches import cv2_imshow  # Colab 專用顯示
 
-files.upload()
+# 上傳圖片
+uploaded = files.upload()  # 會跳出選擇檔案視窗
 
-img = cv2.imread('face.png')
-if img is None:
-    raise ValueError("圖片讀不到")
+# 載入 OpenCV 內建的眼睛偵測分類器
+eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-blur = cv2.GaussianBlur(gray, (9,9), 1.5)
+# 逐一處理上傳的圖片
+for filename in uploaded.keys():
+    # 將上傳檔案轉為 OpenCV 可讀格式
+    img = cv2.imdecode(np.frombuffer(uploaded[filename], np.uint8), cv2.IMREAD_COLOR)
+    if img is None:
+        print(f"無法讀取圖片: {filename}")
+        continue
 
-circles = cv2.HoughCircles(
-    blur,
-    cv2.HOUGH_GRADIENT,
-    dp=1,
-    minDist=50,
-    param1=100,
-    param2=20,
-    minRadius=5,
-    maxRadius=50
-)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-output = img.copy()
+    # 偵測眼睛
+    eyes = eye_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+    if len(eyes) == 0:
+        print(f"未偵測到眼睛: {filename}")
+        continue
 
-centers = []
+    for i, (x, y, w, h) in enumerate(eyes):
+        eye_roi = gray[y:y+h, x:x+w]
 
-if circles is not None:
-    circles = np.uint16(np.around(circles))
+        # Sobel 邊緣檢測
+        sobelx = cv2.Sobel(eye_roi, cv2.CV_64F, 1, 0, ksize=3)
+        sobely = cv2.Sobel(eye_roi, cv2.CV_64F, 0, 1, ksize=3)
+        sobel_edge = cv2.magnitude(sobelx, sobely)
+        sobel_edge = np.uint8(np.clip(sobel_edge, 0, 255))
 
-    print("偵測到圓數量:", len(circles[0]))
-
-    for (x, y, r) in circles[0]:
-        cv2.circle(output, (x, y), r, (0,255,0), 2)
-        cv2.circle(output, (x, y), 2, (0,0,255), 3)
-
-        centers.append((x, y))
-
-if len(centers) >= 2:
-    (x1, y1) = centers[0]
-    (x2, y2) = centers[1]
-
-    distance = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
-
-    print("左眼中心:", (x1, y1))
-    print("右眼中心:", (x2, y2))
-    print("兩眼距離:", distance)
-else:
-    print("偵測不到兩個瞳孔")
-
-cv2_imshow(output)
+        # 顯示眼睛邊緣
+        print(f"顯示 {filename} 第{i+1}隻眼睛的邊緣")
+        cv2_imshow(sobel_edge)
