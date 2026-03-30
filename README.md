@@ -2,6 +2,9 @@
 ## 開發環境
 https://code.visualstudio.com/
 
+## 虛擬環境
+**pipenv**
+
 ## 程式碼
 ```python=
 import cv2
