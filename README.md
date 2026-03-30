@@ -1,19 +1,17 @@
 # 作業：人臉瞳孔偵測
 ## 開發環境
-https://colab.research.google.com/?hl=zh-tw
+https://code.visualstudio.com/
 
 ## 程式碼
 ```python=
 import cv2
 import numpy as np
-from google.colab.patches import cv2_imshow
-from google.colab import files
 import math
 
-# 上傳圖片
-files.upload()
-
-img = cv2.imread('face4.webp')
+# =========================
+# Step 0: 讀取圖片（本地路徑）
+# =========================
+img = cv2.imread('face4.webp')  # 確認圖片和程式在同一資料夾
 if img is None:
     raise ValueError("圖片讀不到")
 
@@ -40,12 +38,10 @@ circles = cv2.HoughCircles(
 
 # 複製圖畫結果
 output = img.copy()
-
 centers = []
 
 if circles is not None:
     circles = np.uint16(np.around(circles))
-
     print("偵測到圓數量:", len(circles[0]))
 
     for (x, y, r) in circles[0]:
@@ -53,7 +49,6 @@ if circles is not None:
         cv2.circle(output, (x, y), r, (0,255,0), 2)
         # 畫中心
         cv2.circle(output, (x, y), 2, (0,0,255), 3)
-
         centers.append((x, y))
 
 # =========================
@@ -63,6 +58,8 @@ if len(centers) >= 2:
     (x1, y1) = centers[0]
     (x2, y2) = centers[1]
 
+    # 避免 overflow，轉 int
+    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
     distance = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
     print("左眼中心:", (x1, y1))
@@ -71,7 +68,12 @@ if len(centers) >= 2:
 else:
     print("偵測不到兩個瞳孔")
 
-cv2_imshow(output)
+# =========================
+# Step 4: 顯示結果
+# =========================
+cv2.imshow("Pupil Detection", output)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 ```
 ## 兩眼距離公式
 ```py
