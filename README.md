@@ -83,7 +83,7 @@ distance = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 + **霍夫圓轉換（Hough Circle Transform）**
 
 
-![image](image/face.png)
+![image](identify_image/face.png)
 
 **Saving face.png to face (1).png**
 **偵測到圓數量: 2**
@@ -94,7 +94,7 @@ distance = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
 **兩眼距離: 183.35757415498276**
 
-![image](image/face1.png)
+![image](identify_image/face1.png)
 
 **Saving face1.png to face1.png**
 **偵測到圓數量: 2**
@@ -105,7 +105,7 @@ distance = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
 **兩眼距離: 202.08908926510605**
 
-![image](image/face2.png)
+![image](identify_image/face2.png)
 
 **Saving face2.png to face2.png**
 
@@ -117,7 +117,7 @@ distance = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
 **兩眼距離: 131.24023773218335**
 
-![image](image/face3.jpg)
+![image](identify_image/face3.png)
 
 **Saving face3.jpg to face3 (1).jpg**
 
@@ -130,7 +130,7 @@ distance = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 **兩眼距離: 102.0196059588548**
 
 
-![image](image/face4.webp)
+![image](identify_image/face4.png)
 
 
 **左眼: (203, 221)**
