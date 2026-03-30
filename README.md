@@ -48,4 +48,4 @@ for filename in uploaded.keys():
         cv2_imshow(sobel_edge)
 ```
 
-![image](https://hackmd.io/_uploads/H1fax0Li-x.png)
+![image](image/face.png)
